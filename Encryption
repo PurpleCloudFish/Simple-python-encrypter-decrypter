@@ -1,0 +1,91 @@
+'''
+Needs to have able to scramble a string of letters, numbers and special characters
+Needs to change each time it is generated
+Needs to be able to store the key for decryption later
+.remove()
+
+Base
+1. for i in range(len(totalStr)
+2. get value from totalStrList and add it to the encryption key using .random and .append
+3. line up the randomised list and the normal list and create a translation
+4. when a string is inputted, encrypt it using the random key
+
+Extra
+1. Asks user whether they want to encrypt or decrypt
+2. If the user wants to decrypt, then get the key and then translate it back
+'''
+#Setting up random, the strings and the lists
+import random
+totalStr = "¬`¦!\"£$%^&*()-_=+[]{}@'#~?/\>.<,| 1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+strListRandomisable = list(totalStr)
+strListNormal = list(totalStr)
+randomisedKey = []
+encryptedStrList = []
+decryptedStrList = []
+
+#Creating the random key and removing the values from the randomisable list
+def createRandomKey(userStr):
+    for i in range(len(totalStr)):
+        currentRandomNumber = random.randint(0, len(totalStr)-i -1)
+        randomisedKey.append(strListRandomisable[currentRandomNumber])
+        strListRandomisable.remove(strListRandomisable[currentRandomNumber])
+    encrypt(randomisedKey, userStr)
+
+#Encrypting the string and then giving it to the user as well as the key
+def encrypt(randomisedKey, userStr):
+    for i in range(len(userStr)):
+        normalStrPos = strListNormal.index(userStr[i])
+        encryptedStrchar = randomisedKey[normalStrPos]
+        encryptedStrList.append(encryptedStrchar)
+    encryptedStr = "".join(encryptedStrList)
+    key = "".join(randomisedKey)
+    print("Your encrypted string is: " + encryptedStr)
+    print("Your key is: " + key)
+
+#Ask the user it they have a key they want to use
+def userHasKeyCheck():
+    userHasKey = input("Do you have a key which you want to use? Yes or no? ")
+    userHasKey = userHasKey.lower()
+    if userHasKey == "yes":
+        userKey = input("Please enter your key: ")
+        if len(userKey) == len(totalStr):
+            userStr = input("Please enter your string to be encrypted: ")
+            encrypt(userKey, userStr)
+        else:
+            print("Invalid key, please try again. If your key doesn't work, get a new key by answering no.")
+            userHasKeyCheck()
+    elif userHasKey == "no":
+        userStr = input("Please enter your string to be encrypted: ")
+        createRandomKey(userStr)
+    else:
+        print("Invalid answer, please try again.")
+        userHasKeyCheck()
+
+#Asks the user if they want to encrypt or decrypt
+def encryptOrDecrypt():
+    userEncryptOrDecrypt = input("What woud you like to do, encrypt or decrypt? ")
+    userEncryptOrDecrypt = userEncryptOrDecrypt.lower()
+    if userEncryptOrDecrypt == "encrypt":
+        userHasKeyCheck()
+    elif userEncryptOrDecrypt == "decrypt":
+        userKey = input("Please enter your key: ")
+        if len(userKey) == len(totalStr):
+            userStr = input("Please enter your string to be decrypted: ")
+            decrypt(userKey, userStr)
+        else:
+            print("Invalid key.")
+            encryptOrDecrypt()
+    else:
+        print("Invalid answer, please try again.")
+        encryptOrDecrypt()
+
+#Decrypts the user's string with their key
+def decrypt(userKey, userStr):
+    for i in range(len(userStr)):
+        keyPos = userKey.index(userStr[i])
+        decryptedStrChar = strListNormal[keyPos]
+        decryptedStrList.append(decryptedStrChar)
+    decryptedStr = "".join(decryptedStrList)
+    print("Your decrypted string is: " + decryptedStr)
+
+encryptOrDecrypt()
